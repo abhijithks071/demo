@@ -1,0 +1,17 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Submit Complaint</h2>
+    <form action="complaint_submit" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+        </div>
+        <div class="form-group">
+            <textarea name="message" class="form-control" placeholder="Your complaint" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    </form>
+</div>
+{% endblock %}

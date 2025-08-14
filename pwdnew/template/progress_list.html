@@ -1,0 +1,125 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+
+{% load static %}
+<head>
+    <title>Home Builder - Free Bootstrap 4 Template by Colorlib</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/icomoon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+<div class="container pt-5">
+			<div class="row justify-content-between">
+				<div class="col">
+					<a class="navbar-brand" href="index.html">P W D 4 You<span>Public Work Department </span></a>
+				</div>
+				<div class="col d-flex justify-content-end">
+					<div class="social-media">
+		    		<p class="mb-0 d-flex">
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-facebook"><i class="sr-only">Facebook</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-twitter"><i class="sr-only">Twitter</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-instagram"><i class="sr-only">Instagram</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-dribbble"><i class="sr-only">Dribbble</i></span></a>
+		    		</p>
+	        </div>
+				</div>
+			</div>
+		</div>
+		<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container">
+
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="fa fa-bars"></span> Menu
+	      </button>
+				<form action="#" class="searchform order-lg-last">
+          <div class="form-group d-flex">
+            <input type="text" class="form-control pl-3" placeholder="Search">
+            <button type="submit" placeholder="" class="form-control search"><span class="fa fa-search"></span></button>
+          </div>
+        </form>
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item "><a href="{% url 'adminhome' %}" class="nav-link">Home</a></li>
+	        	       	 <li class="nav-item "><a href="{% url 'add_workers' 0 %}" class="nav-link">Authority</a></li>
+    <li class="nav-item"><a href="{% url 'user_data' %}" class="nav-link">User Details</a></li>
+    <li class="nav-item"><a href="{% url 'complaint_list' %}" class="nav-link">View Complaints /Update Status</a></li>
+    <li class="nav-item active"><a href="{% url 'progress_list' %}" class="nav-link">Complaint Progress</a></li>
+    <li class="nav-item"><a href="{% url 'feedback_list' %}" class="nav-link">Feedback</a></li>
+    <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link">Logout</a></li>
+
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+    <!-- END nav -->
+
+<div class="container mt-4">
+</div>
+    <h2>Progress Reports</h2>
+    <table class="table table-bordered table-striped table-hover shadow-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Contractor</th>
+                <th>Description</th>
+                <th>User</th>
+                <th>Progress %</th>
+                <th>Image</th>
+                <th>Date</th>
+                <th>Status Update</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in data %}
+            <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.contractor.uname }}</td>
+                <td>{{ r.description }}</td>
+                <td>{{ r.user_details.Name }}</td>
+                <td>{{ r.progress_percent }}%</td>
+                <td>
+                    {% if r.image %}
+                        <img src="{{ r.image.url }}" alt="Progress Image" width="100">
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+                <td>{{ r.created_at|date:"d M Y" }}</td>
+                <td>
+                        <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ r.id }}">
+                        <select name="status" class="form-control form-control-sm mb-1">
+                            <option value="Pending" {% if r.complaint.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="Resolved" {% if r.complaint.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-success">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center text-muted">No reports available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

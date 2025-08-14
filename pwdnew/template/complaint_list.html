@@ -1,0 +1,158 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+{% load static %}
+<head>
+    <title>Home Builder - Free Bootstrap 4 Template by Colorlib</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/icomoon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+<div class="container pt-5">
+			<div class="row justify-content-between">
+				<div class="col">
+					<a class="navbar-brand" href="index.html">P W D  4 You.<span> Public Work Department</span></a>
+				</div>
+				<div class="col d-flex justify-content-end">
+					<div class="social-media">
+		    		<p class="mb-0 d-flex">
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-facebook"><i class="sr-only">Facebook</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-twitter"><i class="sr-only">Twitter</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-instagram"><i class="sr-only">Instagram</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-dribbble"><i class="sr-only">Dribbble</i></span></a>
+		    		</p>
+	        </div>
+				</div>
+			</div>
+		</div>
+		<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container">
+
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="fa fa-bars"></span> Menu
+	      </button>
+				<form action="#" class="searchform order-lg-last">
+          <div class="form-group d-flex">
+            <input type="text" class="form-control pl-3" placeholder="Search">
+            <button type="submit" placeholder="" class="form-control search"><span class="fa fa-search"></span></button>
+          </div>
+        </form>
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav mr-auto">
+                <li class="nav-item "><a href="{% url 'adminhome' %}" class="nav-link">Home</a></li>
+	        	 <li class="nav-item "><a href="{% url 'add_workers' 0 %}" class="nav-link">Authority</a></li>
+    <li class="nav-item"><a href="{% url 'user_data' %}" class="nav-link">User Details</a></li>
+    <li class="nav-item active"><a href="{% url 'complaint_list' %}" class="nav-link">View Complaints /Update Status</a></li>
+    <li class="nav-item"><a href="{% url 'progress_list' %}" class="nav-link">Complaint Progress</a></li>
+    <li class="nav-item"><a href="{% url 'feedback_list' %}" class="nav-link">Feedback</a></li>
+    <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link">Logout</a></li>
+
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+    <!-- END nav -->
+
+
+
+
+
+<div class="container mt-4">
+    <h2>All Complaints</h2>
+         <table class="table table-hover table-bordered shadow-sm bg-white">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Assigned Authority</th>
+                    <th>Assign New Authority</th>
+                    <th>Authority Response & Payment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in data %}
+                <tr>
+                    <td>{{ c.id }}</td>
+                    <td>{{ c.user.Username }}</td>
+                    <td>{{ c.subject }}</td>
+                    <td>{{ c.message }}</td>
+                    <td>
+                        {% if c.status == 'Resolved' %}
+                            <span class="badge badge-success">Resolved</span>
+                        {% else %}
+                            <span class="badge badge-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if c.assigned_to %}
+                            <strong>{{ c.assigned_to.name }}</strong><br>
+                            <small class="text-muted">{{ c.assigned_to.section }}</small>
+                        {% else %}
+                            <span class="text-danger">Not Assigned</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ c.id }}">
+                            <div class="input-group">
+                                <select name="authority" class="form-control form-control-sm" required>
+                                    <option value="">-- Select Authority --</option>
+                                    {% for a in auth %}
+                                        <option value="{{ a.id }}">{{ a.name }} ({{ a.section }})</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary btn-sm">Assign</button>
+                                </div>
+                            </div>
+                        </form>
+                    </td>
+                    <td>
+                        <p><strong>Status:</strong> {{ c.authority_response }}</p>
+                        {% if c.assigned_to and c.expected_fee > 0 %}
+                            <p><strong>Application Fee:</strong> ₹{{ c.expected_fee }}</p>
+                            {% if c.authority_response|lower == 'accepted' and c.application_fee != c.expected_fee %}
+                                <form action="{% url 'make_payment' c.id %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success btn-sm mt-1">Make Payment</button>
+                                </form>
+                            {% elif c.application_fee == c.expected_fee %}
+                                <span class="badge badge-success">Payment Done</span>
+                            {% else %}
+                                <small class="text-muted">Waiting for authority to accept</small>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted">No authority assigned</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center text-muted">No complaints found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+{% endblock %}

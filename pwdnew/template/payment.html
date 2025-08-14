@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pay Now</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .border-box {
+            border: 2px solid green;
+            border-radius: 20px;
+            padding: 30px;
+            background-color: white;
+            text-align: center;
+        }
+
+        h2, h3 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            background-color: green;
+            color: white;
+            border-radius: 20px;
+            width: 156px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="border-box">
+            <h2>Payment Method</h2>
+            <input type="hidden" name="complaint_id" value="{{ complaint.id }}">
+            <h3>Amount : ₹{{ display_amount }}</h3>
+
+            <form id="payment-success-form" action="{% url 'payment_success' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="complaint_id" value="{{ complaint.id }}">
+    <input type="hidden" name="amount" value="{{ display_amount }}">
+    <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+</form>
+
+<button id="rzp-button" class="btn btn-success">Pay ₹{{ display_amount }}</button>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{ razorpay_key }}",
+        "amount": "{{ amount }}", // paise
+        "currency": "INR",
+        "name": "PWD 4 You",
+        "description": "Application Fee",
+        "order_id": "{{ order_id }}",
+        "handler": function (response) {
+            // Set the payment_id in form and submit
+            document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+            document.getElementById('payment-success-form').submit();
+        },
+        "theme": {
+            "color": "#4CAF50"
+        }
+    };
+
+    var rzp = new Razorpay(options);
+    document.getElementById('rzp-button').onclick = function(e) {
+        rzp.open();
+        e.preventDefault();
+    };
+</script>
+
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+
+{% extends 'base.html' %}
+{% block content %}
+
+{% load static %}
+<head>
+    <title>Home Builder - Free Bootstrap 4 Template by Colorlib</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/ionicons.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/icomoon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  </head>
+<div class="container pt-5">
+			<div class="row justify-content-between">
+				<div class="col">
+					<a class="navbar-brand" href="index.html">P W D  4 You.<span> Public Work Department</span></a>
+				</div>
+				<div class="col d-flex justify-content-end">
+					<div class="social-media">
+		    		<p class="mb-0 d-flex">
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-facebook"><i class="sr-only">Facebook</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-twitter"><i class="sr-only">Twitter</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-instagram"><i class="sr-only">Instagram</i></span></a>
+		    			<a href="#" class="d-flex align-items-center justify-content-center"><span class="fa fa-dribbble"><i class="sr-only">Dribbble</i></span></a>
+		    		</p>
+	        </div>
+				</div>
+			</div>
+		</div>
+		<nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+	    <div class="container">
+
+	      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+	        <span class="fa fa-bars"></span> Menu
+	      </button>
+				<form action="#" class="searchform order-lg-last">
+          <div class="form-group d-flex">
+            <input type="text" class="form-control pl-3" placeholder="Search">
+            <button type="submit" placeholder="" class="form-control search"><span class="fa fa-search"></span></button>
+          </div>
+        </form>
+	      <div class="collapse navbar-collapse" id="ftco-nav">
+	        <ul class="navbar-nav mr-auto">
+	        	<li class="nav-item "><a href="userhome" class="nav-link">Home</a></li>
+	        	<li class="nav-item"><a href="edit_profile" class="nav-link">Profile</a></li>
+	        	<li class="nav-item "><a href="complaints" class="nav-link">Complaint Registration</a></li>
+				<li class="nav-item active"><a href="complaint_list_user" class="nav-link">Complaint Status</a></li>
+				<li class="nav-item"><a href="feedback" class="nav-link">Feedback</a></li>
+	        	<li class="nav-item"><a href="logout" class="nav-link">Logout</a></li>
+
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+    <!-- END nav -->
+
+
+
+
+<div class="container mt-4">
+    <h2>All Complaints</h2>
+    <table class="table">
+        <thead class="thead-dark"><tr><th>ID</th><th>Subject</th><th>Message</th><th>Image</th><th>Status</th></tr></thead>
+        <tbody>
+            {% for c in data %}
+            <tr>
+                <td>{{ c.id }}</td>
+				<td>{{ c.subject }}</td>
+				<td>{{ c.message }}</td>
+<!--				<td><img src="{{ c.image.url }}" height="100px" width="100px"></td>-->
+				<td>
+                {% if c.status == 'Resolved' %}
+                    {% if c.progressreport_set.all %}
+                        {% for pr in c.progressreport_set.all %}
+                            {% if pr.image %}
+                                <img src="{{ pr.image.url }}" height="100" width="100" alt="Progress Image" style="margin-right:5px;">
+                            {% endif %}
+                        {% empty %}
+                            No progress images available
+                        {% endfor %}
+                    {% else %}
+                        No progress images available
+                    {% endif %}
+                {% else %}
+                    {% if c.image %}
+                        <img src="{{ c.image.url }}" height="100" width="100" alt="Complaint Image">
+                    {% else %}
+                        No complaint image
+                    {% endif %}
+                {% endif %}
+            </td>
+				<td>{{ c.status }}</td>
+            </tr>
+            {% empty %}<tr><td colspan="6">No complaints</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
